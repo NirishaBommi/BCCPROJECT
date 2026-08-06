@@ -27,5 +27,5 @@ COPY . .
 # Expose API port
 EXPOSE 5000
 
-# Run FastAPI server using environment PORT
-CMD ["sh", "-c", "uvicorn app_fastapi:app --host 0.0.0.0 --port ${PORT:-5000}"]
+# Run FastAPI server via app_fastapi.py (handles PORT automatically)
+CMD ["python", "app_fastapi.py"]
