@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clinical AI Skin Disease Dashboard</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        clinical: {
+                            bg: '#0b1329',
+                            card: '#1c2541',
+                            accent: '#00f2fe',
+                            accentDeep: '#4facfe',
+                            success: '#10b981',
+                            warning: '#f59e0b',
+                            danger: '#ef4444',
+                            purple: '#f093fb'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom stylesheet override link -->
+    <link rel="stylesheet" href="/static/dashboard.css">
+</head>
+<body class="bg-clinical-bg text-slate-100 font-['Inter'] antialiased min-h-screen flex">
+
+    <!-- Sidebar Navigation -->
+    <aside class="w-72 bg-clinical-card border-r border-slate-800 flex flex-col justify-between shrink-0">
+        <div class="p-6">
+            <div class="flex items-center gap-3 mb-8">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-clinical-accentDeep to-clinical-accent flex items-center justify-center text-clinical-bg text-xl font-bold shadow-lg shadow-cyan-500/20">
+                    <i class="fa-solid fa-laptop-medical"></i>
+                </div>
+                <div>
+                    <h1 class="font-['Outfit'] font-bold text-lg leading-tight">DERMA-AI</h1>
+                    <span class="text-xs text-slate-400 font-semibold tracking-wider uppercase">Clinical Workspace</span>
+                </div>
+            </div>
+            
+            <nav class="space-y-1.5" id="sidebar-nav">
+                <a href="#home-tab" class="nav-item active flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300">
+                    <i class="fa-solid fa-house-chimney w-5 text-center"></i> Dashboard Home
+                </a>
+                <a href="#diagnose-tab" class="nav-item flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300">
+                    <i class="fa-solid fa-microscope w-5 text-center"></i> Clinical Diagnose
+                </a>
+                <a href="#analytics-tab" class="nav-item flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300">
+                    <i class="fa-solid fa-chart-line w-5 text-center"></i> Analytics Hub
+                </a>
+                <a href="#history-tab" class="nav-item flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300">
+                    <i class="fa-solid fa-folder-open w-5 text-center"></i> Patient Records
+                </a>
+                <a href="#benchmark-tab" class="nav-item flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300">
+                    <i class="fa-solid fa-microchip w-5 text-center"></i> Model Benchmark
+                </a>
+                <a href="#training-tab" class="nav-item flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300">
+                    <i class="fa-solid fa-gears w-5 text-center"></i> Training Monitor
+                </a>
+                <a href="#admin-tab" class="nav-item flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300">
+                    <i class="fa-solid fa-user-shield w-5 text-center"></i> Admin Console
+                </a>
+            </nav>
+        </div>
+        
+        <div class="p-6 border-t border-slate-800 space-y-4">
+            <div class="flex items-center justify-between text-xs text-slate-400 font-medium">
+                <span>Model Server Status</span>
+                <span class="flex items-center gap-1.5 text-clinical-success font-semibold">
+                    <span class="w-2 h-2 rounded-full bg-clinical-success animate-pulse"></span> Online
+                </span>
+            </div>
+            
+            <button id="theme-toggle" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-slate-700 hover:border-clinical-accent hover:text-clinical-accent text-sm font-medium transition-all duration-300">
+                <i class="fa-regular fa-sun"></i> Light Mode
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Workspace -->
+    <main class="flex-1 p-8 overflow-y-auto max-w-7xl mx-auto space-y-8">
+        
+        <!-- ==================== TAB: HOME ==================== -->
+        <section id="home-tab" class="tab-pane space-y-8">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h2 class="font-['Outfit'] font-extrabold text-3xl tracking-tight bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">Clinical Control Room</h2>
+                    <p class="text-slate-400 text-sm mt-1">Real-time stats monitor and diagnostic queue metrics.</p>
+                </div>
+                <div class="text-sm font-medium text-slate-400 bg-clinical-card px-4 py-2 rounded-xl border border-slate-800 flex items-center gap-2">
+                    <i class="fa-regular fa-calendar-days text-clinical-accent"></i> <span id="current-date">July 3, 2026</span>
+                </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="glass-card p-6 flex flex-col justify-between">
+                    <div class="flex justify-between items-start">
+                        <span class="text-xs font-bold tracking-wider uppercase text-slate-400">Total Patients</span>
+                        <div class="w-10 h-10 rounded-lg bg-cyan-500/10 flex items-center justify-center text-clinical-accent"><i class="fa-solid fa-hospital-user"></i></div>
+                    </div>
+                    <div class="mt-4">
+                        <h3 class="font-['Outfit'] text-3xl font-extrabold" id="stat-total-patients">2,482</h3>
+                        <span class="text-xs text-clinical-success font-medium"><i class="fa-solid fa-arrow-trend-up"></i> +12% this week</span>
+                    </div>
+                </div>
+
+                <div class="glass-card p-6 flex flex-col justify-between">
+                    <div class="flex justify-between items-start">
+                        <span class="text-xs font-bold tracking-wider uppercase text-slate-400">Images Processed</span>
+                        <div class="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center text-clinical-success"><i class="fa-solid fa-image"></i></div>
+                    </div>
+                    <div class="mt-4">
+                        <h3 class="font-['Outfit'] text-3xl font-extrabold" id="stat-total-images">26,999</h3>
+                        <span class="text-xs text-slate-400 font-medium">Composite benchmark standard</span>
+                    </div>
+                </div>
+
+                <div class="glass-card p-6 flex flex-col justify-between">
+                    <div class="flex justify-between items-start">
+                        <span class="text-xs font-bold tracking-wider uppercase text-slate-400">Critical Cases</span>
+                        <div class="w-10 h-10 rounded-lg bg-rose-500/10 flex items-center justify-center text-clinical-danger"><i class="fa-solid fa-skull-crossbones"></i></div>
+                    </div>
+                    <div class="mt-4">
+                        <h3 class="font-['Outfit'] text-3xl font-extrabold" id="stat-critical-cases">128</h3>
+                        <span class="text-xs text-clinical-danger font-medium"><i class="fa-solid fa-bell"></i> Action required</span>
+                    </div>
+                </div>
+
+                <div class="glass-card p-6 flex flex-col justify-between">
+                    <div class="flex justify-between items-start">
+                        <span class="text-xs font-bold tracking-wider uppercase text-slate-400">Model Accuracy</span>
+                        <div class="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center text-clinical-purple"><i class="fa-solid fa-check-double"></i></div>
+                    </div>
+                    <div class="mt-4">
+                        <h3 class="font-['Outfit'] text-3xl font-extrabold">97.14%</h3>
+                        <span class="text-xs text-clinical-purple font-medium">ECE calibrated: 0.012</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Performance Monitor Row -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- System Performance Monitor -->
+                <div class="glass-card p-6 col-span-2 space-y-6">
+                    <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+                        <h4 class="font-['Outfit'] font-bold text-lg"><i class="fa-solid fa-gauge-high text-clinical-accent"></i> System Performance Monitor</h4>
+                        <span class="text-xs text-slate-400 font-medium">Refreshes every 5s</span>
+                    </div>
+                    <div class="grid grid-cols-3 gap-6">
+                        <div class="space-y-2">
+                            <span class="text-xs text-slate-400 font-semibold">CPU Usage</span>
+                            <div class="flex items-center gap-3">
+                                <div class="flex-1 bg-slate-800 rounded-full h-2.5">
+                                    <div class="bg-clinical-accent h-2.5 rounded-full" id="cpu-bar" style="width: 14%"></div>
+                                </div>
+                                <span class="text-xs font-bold" id="cpu-val">14%</span>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <span class="text-xs text-slate-400 font-semibold">GPU Memory</span>
+                            <div class="flex items-center gap-3">
+                                <div class="flex-1 bg-slate-800 rounded-full h-2.5">
+                                    <div class="bg-clinical-purple h-2.5 rounded-full" id="gpu-bar" style="width: 48%"></div>
+                                </div>
+                                <span class="text-xs font-bold" id="gpu-val">3.8 GB</span>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <span class="text-xs text-slate-400 font-semibold">System Memory</span>
+                            <div class="flex items-center gap-3">
+                                <div class="flex-1 bg-slate-800 rounded-full h-2.5">
+                                    <div class="bg-clinical-success h-2.5 rounded-full" id="ram-bar" style="width: 32%"></div>
+                                </div>
+                                <span class="text-xs font-bold" id="ram-val">32%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Server Info -->
+                <div class="glass-card p-6 flex flex-col justify-between">
+                    <h4 class="font-['Outfit'] font-bold text-lg border-b border-slate-800 pb-4"><i class="fa-solid fa-server text-clinical-accent"></i> Running Model info</h4>
+                    <div class="space-y-2 text-sm mt-4">
+                        <div class="flex justify-between"><span class="text-slate-400">Backbone:</span><strong class="text-slate-200">SE-STN-EfficientNet</strong></div>
+                        <div class="flex justify-between"><span class="text-slate-400">Inference Speed:</span><strong class="text-clinical-accent" id="inference-speed-val">48 FPS</strong></div>
+                        <div class="flex justify-between"><span class="text-slate-400">Queue Status:</span><strong class="text-clinical-success" id="queue-status-val">Idle</strong></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Queue table -->
+            <div class="glass-card p-6 space-y-4">
+                <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+                    <h4 class="font-['Outfit'] font-bold text-lg"><i class="fa-solid fa-list-check text-clinical-accent"></i> Processing Queue</h4>
+                    <span class="px-2.5 py-1 bg-slate-800 text-xs font-semibold rounded-lg text-slate-400">0 Items Pending</span>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left text-slate-400">
+                        <thead class="text-xs uppercase bg-slate-900/50 text-slate-300 border-b border-slate-800">
+                            <tr>
+                                <th class="px-6 py-3">Job ID</th>
+                                <th class="px-6 py-3">Patient Name</th>
+                                <th class="px-6 py-3">Source Channel</th>
+                                <th class="px-6 py-3">Inference Engine</th>
+                                <th class="px-6 py-3">Execution Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b border-slate-800/50 hover:bg-slate-800/10">
+                                <td class="px-6 py-4 font-mono text-clinical-accent">#00f2a1b9</td>
+                                <td class="px-6 py-4 text-slate-200">Sarah Jenkins</td>
+                                <td class="px-6 py-4"><span class="flex items-center gap-1.5"><i class="fa-solid fa-video text-clinical-purple"></i> Webcam HD</span></td>
+                                <td class="px-6 py-4 font-semibold text-xs">EfficientNet-B5</td>
+                                <td class="px-6 py-4"><span class="px-2 py-0.5 bg-emerald-500/10 text-clinical-success font-bold text-xs rounded border border-emerald-500/20">Completed</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB: DIAGNOSE ==================== -->
+        <section id="diagnose-tab" class="tab-pane hidden space-y-8">
+            <div>
+                <h2 class="font-['Outfit'] font-extrabold text-3xl tracking-tight bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">Dermoscopic Diagnostic Room</h2>
+                <p class="text-slate-400 text-sm mt-1">Upload skin lesion images, perform real-time model inferences, and generate explainable CAM heatmaps.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Left Input Settings Panel -->
+                <div class="lg:col-span-1 space-y-6">
+                    <!-- Patient metadata -->
+                    <div class="glass-card p-6 space-y-4">
+                        <h4 class="font-['Outfit'] font-bold text-lg border-b border-slate-800 pb-3"><i class="fa-solid fa-user-tag text-clinical-accent"></i> Patient Information</h4>
+                        <div class="space-y-3.5">
+                            <div>
+                                <label class="text-xs font-bold uppercase text-slate-400 tracking-wider">Patient Name</label>
+                                <input type="text" id="patient-name-input" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-clinical-accent mt-1" placeholder="John Doe">
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="text-xs font-bold uppercase text-slate-400 tracking-wider">Age</label>
+                                    <input type="number" id="patient-age-input" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-clinical-accent mt-1" placeholder="42">
+                                </div>
+                                <div>
+                                    <label class="text-xs font-bold uppercase text-slate-400 tracking-wider">Gender</label>
+                                    <select id="patient-gender-select" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-clinical-accent mt-1">
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="text-xs font-bold uppercase text-slate-400 tracking-wider">Clinical Notes</label>
+                                <textarea id="doctor-notes-input" rows="2" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-clinical-accent mt-1 resize-none" placeholder="Enter clinical lesion notes..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Upload Zone -->
+                    <div class="glass-card p-6 space-y-4">
+                        <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                            <h4 class="font-['Outfit'] font-bold text-lg"><i class="fa-solid fa-camera text-clinical-accent"></i> Input Acquisition</h4>
+                            <button id="webcam-btn" class="text-xs px-2.5 py-1 rounded bg-slate-800 text-slate-300 hover:bg-slate-700 font-semibold flex items-center gap-1.5"><i class="fa-solid fa-video"></i> Webcam</button>
+                        </div>
+                        
+                        <!-- Drag & Drop Zone -->
+                        <div class="drop-zone border-2 border-dashed border-slate-800 hover:border-clinical-accent rounded-xl p-8 text-center cursor-pointer transition-all duration-300 relative" id="drop-zone">
+                            <input type="file" id="file-input" accept="image/*" class="hidden">
+                            <div id="drop-zone-content" class="space-y-3">
+                                <i class="fa-regular fa-image text-3xl text-slate-500"></i>
+                                <div class="text-sm font-medium">Drag & Drop Image here</div>
+                                <div class="text-xs text-slate-500">or click to browse local files</div>
+                            </div>
+                            <!-- Image preview inside dropzone -->
+                            <img id="image-preview" src="" class="hidden w-full max-h-48 object-contain rounded-lg mx-auto">
+                            <!-- Live Webcam Feed inside dropzone -->
+                            <div id="webcam-container" class="hidden relative rounded-lg overflow-hidden border border-slate-700 bg-black">
+                                <video id="webcam-video" autoplay playsinline class="w-full h-full max-h-48 object-cover"></video>
+                                <button id="capture-btn" class="absolute bottom-2 left-1/2 -translate-x-1/2 px-3 py-1 bg-clinical-danger text-white rounded text-xs font-bold"><i class="fa-solid fa-circle"></i> Capture</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Model select dropdown -->
+                    <div class="glass-card p-6 space-y-4">
+                        <h4 class="font-['Outfit'] font-bold text-lg border-b border-slate-800 pb-3"><i class="fa-solid fa-sliders text-clinical-accent"></i> Model Configuration</h4>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="text-xs font-bold uppercase text-slate-400 tracking-wider">Inference Model</label>
+                                <select id="model-select" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-clinical-accent mt-1">
+                                    <option value="Standard Model (EfficientNet-B0)">EfficientNet-B0 (Standard Mode)</option>
+                                    <option value="Ensemble Mode (B0 + B5) - Recommended">Ensemble Mode (B0 + B5) - High Accuracy</option>
+                                    <option value="ResNet50">ResNet50</option>
+                                    <option value="DenseNet121">DenseNet121</option>
+                                    <option value="MobileNetV3">MobileNetV3 (Edge Inference)</option>
+                                    <option value="InceptionV3">InceptionV3</option>
+                                    <option value="Vision Transformer (Future)">Vision Transformer (ViT)</option>
+                                </select>
+                            </div>
+
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <strong class="text-sm font-semibold text-slate-200">Test-Time Augmentation (TTA)</strong>
+                                    <p class="text-xs text-slate-500">Averages predictions over flipped inputs</p>
+                                </div>
+                                <label class="switch relative inline-block w-12 h-6">
+                                    <input type="checkbox" id="tta-toggle" checked class="opacity-0 w-0 h-0">
+                                    <span class="slider round absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-slate-800 border border-slate-700 transition duration-300 rounded-full before:absolute before:content-[''] before:h-4 before:w-4 before:left-1 before:bottom-0.7 before:bg-white before:transition before:duration-300 before:rounded-full"></span>
+                                </label>
+                            </div>
+
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <strong class="text-sm font-semibold text-slate-200">Calibrated Threshold (t=0.40)</strong>
+                                    <p class="text-xs text-slate-500">Clinical safety cutoff instead of 0.50</p>
+                                </div>
+                                <label class="switch relative inline-block w-12 h-6">
+                                    <input type="checkbox" id="threshold-toggle" checked class="opacity-0 w-0 h-0">
+                                    <span class="slider round absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-slate-800 border border-slate-700 transition duration-300 rounded-full before:absolute before:content-[''] before:h-4 before:w-4 before:left-1 before:bottom-0.7 before:bg-white before:transition before:duration-300 before:rounded-full"></span>
+                                </label>
+                            </div>
+
+                            <button id="analyze-btn" class="w-full py-3 bg-gradient-to-r from-clinical-accentDeep to-clinical-accent text-clinical-bg font-extrabold text-sm rounded-xl tracking-wider uppercase hover:shadow-lg hover:shadow-cyan-500/25 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                                <i class="fa-solid fa-wand-magic-sparkles"></i> Run Analysis
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Results Workspace -->
+                <div class="lg:col-span-2 space-y-6">
+                    <!-- Placeholder state -->
+                    <div id="results-placeholder" class="glass-card p-16 text-center space-y-4">
+                        <i class="fa-solid fa-microscope text-6xl text-slate-600 animate-pulse"></i>
+                        <h3 class="font-['Outfit'] font-bold text-xl text-slate-300">Awaiting Lesion Analysis</h3>
+                        <p class="text-slate-400 text-sm max-w-sm mx-auto">Upload a dermoscopic photo or capture a frame from the webcam, fill in patient data, and press "Run Analysis".</p>
+                    </div>
+
+                    <!-- Loader state -->
+                    <div id="results-loader" class="hidden glass-card p-16 text-center space-y-6">
+                        <div class="spinner mx-auto w-16 h-16 border-4 border-slate-800 border-t-clinical-accent rounded-full animate-spin"></div>
+                        <div class="space-y-2">
+                            <h3 class="font-['Outfit'] font-bold text-xl text-slate-300">Running Diagnostic Inference...</h3>
+                            <p class="text-slate-400 text-sm max-w-sm mx-auto">Computing spatial transformation, squeeze-excitation weights, segmentation maps, and Explainable AI backpropagation.</p>
+                        </div>
+                    </div>
+
+                    <!-- Actual results dashboard -->
+                    <div id="results-dashboard" class="hidden space-y-6">
+                        <!-- Top Output Card -->
+                        <div class="glass-card p-6 space-y-6">
+                            <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+                                <div>
+                                    <span class="text-xs font-bold uppercase text-slate-400 tracking-wider">Diagnostic Output</span>
+                                    <h3 class="font-['Outfit'] font-extrabold text-2xl text-clinical-danger" id="result-diagnosis-name">BCC (Basal Cell Carcinoma)</h3>
+                                </div>
+                                <span id="result-risk-badge" class="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-red-500/10 text-clinical-danger border border-red-500/20">High Risk</span>
+                            </div>
+
+                            <!-- Explanatory alert -->
+                            <div class="threshold-explanation" id="result-threshold-explanation">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                <span><strong>Screening Flag:</strong> Risk probability exceeds safety threshold to prevent false negatives.</span>
+                            </div>
+
+                            <!-- Bar meter -->
+                            <div class="space-y-2">
+                                <div class="flex justify-between items-center text-sm">
+                                    <span class="font-semibold text-slate-400">BCC Risk Probability</span>
+                                    <span class="font-extrabold text-clinical-accent text-lg" id="result-confidence-val">99.85%</span>
+                                </div>
+                                <div class="confidence-bar-bg">
+                                    <div class="confidence-bar-fill" id="result-confidence-fill" style="width: 0%"></div>
+                                    <div class="threshold-tick" id="result-threshold-tick" style="left: 40%"></div>
+                                </div>
+                                <div class="flex justify-between items-center text-xs text-slate-500">
+                                    <span>Inference Speed: <strong class="text-slate-300" id="result-speed-val">0.082s</strong></span>
+                                    <span>Config: <strong class="text-slate-300" id="result-model-val">EfficientNet-B5</strong></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Side-by-Side Images -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Preprocessing comparison card -->
+                            <div class="glass-card p-6 space-y-4">
+                                <h4 class="font-['Outfit'] font-bold text-lg border-b border-slate-800 pb-3"><i class="fa-solid fa-circle-nodes text-clinical-accent"></i> Hair Removal & Color Normalization</h4>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="space-y-1.5">
+                                        <span class="text-[10px] font-bold text-slate-400 uppercase">Original</span>
+                                        <img id="res-orig-img" class="w-full aspect-square object-cover rounded-lg border border-slate-800" src="">
+                                    </div>
+                                    <div class="space-y-1.5">
+                                        <span class="text-[10px] font-bold text-slate-400 uppercase">Preprocessed</span>
+                                        <img id="res-prep-img" class="w-full aspect-square object-cover rounded-lg border border-slate-800" src="">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Explainability / Segmentation Card -->
+                            <div class="glass-card p-6 space-y-4">
+                                <h4 class="font-['Outfit'] font-bold text-lg border-b border-slate-800 pb-3"><i class="fa-solid fa-eye-low-vision text-clinical-accent"></i> Visual Explanations & Segmentations</h4>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <!-- Interactive Mask with Opacity -->
+                                    <div class="space-y-2">
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-[10px] font-bold text-slate-400 uppercase">Contour Mask</span>
+                                            <input type="range" id="mask-opacity" min="0" max="1" step="0.05" value="0.4" class="w-16 h-1 bg-slate-800 accent-clinical-accent rounded-lg appearance-none cursor-pointer">
+                                        </div>
+                                        <div class="relative w-full aspect-square rounded-lg overflow-hidden border border-slate-800">
+                                            <img id="res-mask-underlay" class="absolute inset-0 w-full h-full object-cover" src="">
+                                            <img id="res-mask-overlay" class="absolute inset-0 w-full h-full object-cover transition-opacity duration-150" src="" style="opacity: 0.4;">
+                                        </div>
+                                    </div>
+
+                                    <!-- Interactive CAM with Opacity & Tabs -->
+                                    <div class="space-y-2">
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-[10px] font-bold text-slate-400 uppercase">Explainable AI</span>
+                                            <input type="range" id="cam-opacity" min="0" max="1" step="0.05" value="0.45" class="w-16 h-1 bg-slate-800 accent-clinical-purple rounded-lg appearance-none cursor-pointer">
+                                        </div>
+                                        <div class="relative w-full aspect-square rounded-lg overflow-hidden border border-slate-800">
+                                            <img id="res-cam-underlay" class="absolute inset-0 w-full h-full object-cover" src="">
+                                            <img id="res-cam-overlay" class="absolute inset-0 w-full h-full object-cover transition-opacity duration-150" src="" style="opacity: 0.45;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- CAM Methods Selector & Explanation Block -->
+                        <div class="glass-card p-6 space-y-4">
+                            <!-- Tabs for explainability methods -->
+                            <div class="flex border-b border-slate-800 gap-6" id="cam-tabs">
+                                <button data-method="gradcam" class="cam-tab-btn active border-b-2 border-clinical-accent text-clinical-accent pb-3 text-sm font-semibold transition-all">Grad-CAM</button>
+                                <button data-method="gradcam_plusplus" class="cam-tab-btn text-slate-400 hover:text-slate-300 pb-3 text-sm font-medium transition-all">Grad-CAM++</button>
+                                <button data-method="scorecam" class="cam-tab-btn text-slate-400 hover:text-slate-300 pb-3 text-sm font-medium transition-all">Score-CAM</button>
+                                <button data-method="eigencam" class="cam-tab-btn text-slate-400 hover:text-slate-300 pb-3 text-sm font-medium transition-all">Eigen-CAM</button>
+                                <button data-method="integrated_gradients" class="cam-tab-btn text-slate-400 hover:text-slate-300 pb-3 text-sm font-medium transition-all">Integrated Gradients</button>
+                            </div>
+
+                            <div class="space-y-2">
+                                <span class="text-xs font-bold uppercase text-slate-400 tracking-wider">Clinical Interpretation (XAI feedback)</span>
+                                <p class="text-sm text-slate-300 leading-relaxed" id="result-interpretation-text">AI focused on arborizing vessels and blue-gray globules.</p>
+                            </div>
+                        </div>
+
+                        <!-- 9-Class distribution and PDF print card -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Probabilities list -->
+                            <div class="glass-card p-6 space-y-4">
+                                <h4 class="font-['Outfit'] font-bold text-lg border-b border-slate-800 pb-3"><i class="fa-solid fa-chart-column text-clinical-accent"></i> Probabilities Distribution</h4>
+                                <div class="space-y-3" id="class-probs-list">
+                                    <!-- Populated in JS -->
+                                </div>
+                            </div>
+
+                            <!-- clinical report & export card -->
+                            <div class="glass-card p-6 flex flex-col justify-between space-y-4">
+                                <div>
+                                    <h4 class="font-['Outfit'] font-bold text-lg border-b border-slate-800 pb-3"><i class="fa-solid fa-file-pdf text-clinical-accent"></i> Clinical Report Exporter</h4>
+                                    <p class="text-xs text-slate-400 mt-2 leading-relaxed">Compile a clinical diagnostic worksheet including original photo, segmentation contours, Grad-CAM maps, patient ID metadata, and doctor recommendations.</p>
+                                </div>
+                                <button id="download-pdf-btn" class="w-full py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 hover:border-clinical-accent font-bold text-sm rounded-xl transition duration-300 flex items-center justify-center gap-2">
+                                    <i class="fa-solid fa-file-arrow-down text-clinical-accent"></i> Export Diagnosis PDF Report
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB: ANALYTICS ==================== -->
+        <section id="analytics-tab" class="tab-pane hidden space-y-8">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h2 class="font-['Outfit'] font-extrabold text-3xl tracking-tight bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">Dermatological Analytics Hub</h2>
+                    <p class="text-slate-400 text-sm mt-1">Multi-dimensional dataset visualizations, validation curves, and ROC benchmarks.</p>
+                </div>
+                <div class="flex items-center gap-3 bg-clinical-card border border-slate-800 rounded-xl px-4 py-2">
+                    <label for="analytics-model-select" class="text-xs font-bold uppercase text-slate-400">Select Model Profile:</label>
+                    <select id="analytics-model-select" class="bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 text-xs font-semibold text-clinical-accent focus:outline-none">
+                        <option value="SE-STN-EfficientNet-B5">SE-STN-EfficientNet-B5 (Active)</option>
+                        <option value="EfficientNet-B4">EfficientNet-B4</option>
+                        <option value="DenseNet-121">DenseNet-121</option>
+                        <option value="ResNet-50">ResNet-50</option>
+                        <option value="InceptionV3">InceptionV3</option>
+                        <option value="MobileNetV3">MobileNetV3</option>
+                        <option value="VGG-16">VGG-16</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Numerical Metrics Grid -->
+            <div class="grid grid-cols-2 md:grid-cols-8 gap-4">
+                <div class="glass-card p-4 text-center space-y-1">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Accuracy</span>
+                    <div id="stat-acc" class="text-2xl font-black text-clinical-accent">97.14%</div>
+                </div>
+                <div class="glass-card p-4 text-center space-y-1">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Precision</span>
+                    <div id="stat-prec" class="text-2xl font-black text-clinical-accent">97.30%</div>
+                </div>
+                <div class="glass-card p-4 text-center space-y-1">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Recall</span>
+                    <div id="stat-rec" class="text-2xl font-black text-clinical-accent">96.90%</div>
+                </div>
+                <div class="glass-card p-4 text-center space-y-1">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Specificity</span>
+                    <div id="stat-spec" class="text-2xl font-black text-clinical-accent">97.55%</div>
+                </div>
+                <div class="glass-card p-4 text-center space-y-1">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">F1-Score</span>
+                    <div id="stat-f1" class="text-2xl font-black text-clinical-accent">97.10%</div>
+                </div>
+                <div class="glass-card p-4 text-center space-y-1">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">ROC-AUC</span>
+                    <div id="stat-auc" class="text-2xl font-black text-clinical-accent">98.62%</div>
+                </div>
+                <div class="glass-card p-4 text-center space-y-1">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Balanced Acc</span>
+                    <div id="stat-bal-acc" class="text-2xl font-black text-clinical-accent">97.22%</div>
+                </div>
+                <div class="glass-card p-4 text-center space-y-1">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">ECE</span>
+                    <div id="stat-ece" class="text-2xl font-black text-clinical-accent">0.012</div>
+                </div>
+            </div>
+
+            <!-- Confusion Matrix, Report and Learning Curve Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Confusion Matrix Card (Heatmap) -->
+                <div class="bg-white/95 border border-slate-200 text-slate-900 shadow-xl rounded-2xl p-6 space-y-4">
+                    <h4 class="font-['Outfit'] font-bold text-lg border-b border-slate-200 pb-3 text-slate-800">Confusion Matrix Heatmap</h4>
+                    <div class="chart-container relative h-48 flex items-center justify-center bg-white rounded-xl overflow-hidden">
+                        <img id="img-confusion" src="/static/outputs/confusion_se_stn_efficientnet_b5.png" class="max-h-full max-w-full object-contain">
+                    </div>
+                </div>
+
+                <!-- Classification Report Card -->
+                <div class="glass-card p-6 space-y-4">
+                    <h4 class="font-['Outfit'] font-bold text-lg border-b border-slate-800 pb-3">Classification Report</h4>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs text-left text-slate-400">
+                            <thead class="text-[10px] uppercase bg-slate-900/50 text-slate-300 border-b border-slate-800">
+                                <tr>
+                                    <th class="py-2">Class</th>
+                                    <th class="py-2">Precision</th>
+                                    <th class="py-2">Recall</th>
+                                    <th class="py-2">F1-Score</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b border-slate-800/30">
+                                    <td class="py-2 font-bold text-slate-300">Non-BCC</td>
+                                    <td class="py-2" id="report-non-prec">96.90%</td>
+                                    <td class="py-2" id="report-non-rec">97.55%</td>
+                                    <td class="py-2" id="report-non-f1">97.22%</td>
+                                </tr>
+                                <tr class="border-b border-slate-800/30">
+                                    <td class="py-2 font-bold text-clinical-danger">BCC</td>
+                                    <td class="py-2" id="report-bcc-prec">97.30%</td>
+                                    <td class="py-2" id="report-bcc-rec">96.90%</td>
+                                    <td class="py-2" id="report-bcc-f1">97.10%</td>
+                                </tr>
+                                <tr class="border-b border-slate-800/30 font-semibold text-slate-200">
+                                    <td class="py-2">Accuracy</td>
+                                    <td colspan="2" class="py-2 text-center">-</td>
+                                    <td class="py-2 text-clinical-accent" id="report-acc">97.14%</td>
+                                </tr>
+                                <tr class="border-b border-slate-800/30 text-slate-300">
+                                    <td class="py-2">Macro Avg</td>
+                                    <td class="py-2" id="report-macro-prec">97.10%</td>
+                                    <td class="py-2" id="report-macro-rec">97.22%</td>
+                                    <td class="py-2" id="report-macro-f1">97.16%</td>
+                                </tr>
+                                <tr class="text-slate-300">
+                                    <td class="py-2">Weighted Avg</td>
+                                    <td class="py-2" id="report-weighted-prec">97.10%</td>
+                                    <td class="py-2" id="report-weighted-rec">97.14%</td>
+                                    <td class="py-2" id="report-weighted-f1">97.12%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Accuracy Learning Curve Card -->
+                <div class="bg-white/95 border border-slate-200 text-slate-900 shadow-xl rounded-2xl p-6 space-y-4">
+                    <h4 class="font-['Outfit'] font-bold text-lg border-b border-slate-200 pb-3 text-slate-800">Accuracy Learning Curve</h4>
+                    <div class="chart-container relative h-48 flex items-center justify-center bg-white rounded-xl overflow-hidden">
+                        <img id="img-learning" src="/static/outputs/learning_se_stn_efficientnet_b5.png" class="max-h-full max-w-full object-contain">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-white/95 border border-slate-200 text-slate-900 shadow-xl rounded-2xl p-6 space-y-4">
+                    <h4 class="font-['Outfit'] font-bold text-lg border-b border-slate-200 pb-3 text-slate-800">Daily Diagnostic Predictions</h4>
+                    <div class="chart-container relative h-72 flex items-center justify-center bg-white rounded-xl overflow-hidden">
+                        <img id="img-daily" src="/static/outputs/workload.png" class="max-h-full max-w-full object-contain">
+                    </div>
+                </div>
+
+                <div class="bg-white/95 border border-slate-200 text-slate-900 shadow-xl rounded-2xl p-6 space-y-4">
+                    <h4 class="font-['Outfit'] font-bold text-lg border-b border-slate-200 pb-3 text-slate-800">Dermatological Class Distribution</h4>
+                    <div class="chart-container relative h-72 flex items-center justify-center bg-white rounded-xl overflow-hidden">
+                        <img id="img-diseases" src="/static/outputs/distribution_se_stn_efficientnet_b5.png" class="max-h-full max-w-full object-contain">
+                    </div>
+                </div>
+
+                <div class="bg-white/95 border border-slate-200 text-slate-900 shadow-xl rounded-2xl p-6 space-y-4">
+                    <h4 class="font-['Outfit'] font-bold text-lg border-b border-slate-200 pb-3 text-slate-800">ROC-AUC Curves Comparison</h4>
+                    <div class="chart-container relative h-72 flex items-center justify-center bg-white rounded-xl overflow-hidden">
+                        <img id="img-roc" src="/static/outputs/roc_curves.png" class="max-h-full max-w-full object-contain">
+                    </div>
+                </div>
+
+                <div class="bg-white/95 border border-slate-200 text-slate-900 shadow-xl rounded-2xl p-6 space-y-4">
+                    <h4 class="font-['Outfit'] font-bold text-lg border-b border-slate-200 pb-3 text-slate-800">Precision-Recall Curves Comparison</h4>
+                    <div class="chart-container relative h-72 flex items-center justify-center bg-white rounded-xl overflow-hidden">
+                        <img id="img-pr" src="/static/outputs/pr_curves.png" class="max-h-full max-w-full object-contain">
+                    </div>
+                </div>
+
+                <div class="bg-white/95 border border-slate-200 text-slate-900 shadow-xl rounded-2xl p-6 space-y-4">
+                    <h4 class="font-['Outfit'] font-bold text-lg border-b border-slate-200 pb-3 text-slate-800">Reliability Calibration Diagram</h4>
+                    <div class="chart-container relative h-72 flex items-center justify-center bg-white rounded-xl overflow-hidden">
+                        <img id="img-calibration" src="/static/outputs/calibration_se_stn_efficientnet_b5.png" class="max-h-full max-w-full object-contain">
+                    </div>
+                </div>
+
+                <div class="bg-white/95 border border-slate-200 text-slate-900 shadow-xl rounded-2xl p-6 space-y-4">
+                    <h4 class="font-['Outfit'] font-bold text-lg border-b border-slate-200 pb-3 text-slate-800">FL-CE Loss Convergence Curve</h4>
+                    <div class="chart-container relative h-72 flex items-center justify-center bg-white rounded-xl overflow-hidden">
+                        <img id="img-loss" src="/static/outputs/loss_se_stn_efficientnet_b5.png" class="max-h-full max-w-full object-contain">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB: HISTORY ==================== -->
+        <section id="history-tab" class="tab-pane hidden space-y-8">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h2 class="font-['Outfit'] font-extrabold text-3xl tracking-tight bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">Patient logs & database</h2>
+                    <p class="text-slate-400 text-sm mt-1">Search, update, and manage historical clinical predictions logged in SQLite.</p>
+                </div>
+                <button id="export-excel-btn" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 hover:border-clinical-accent rounded-xl text-sm font-semibold transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-file-excel text-green-500"></i> Export to Excel (.xlsx)
+                </button>
+            </div>
+
+            <!-- Filters -->
+            <div class="glass-card p-6">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div>
+                        <label class="text-xs font-bold uppercase text-slate-400 tracking-wider">Search Query</label>
+                        <input type="text" id="filter-search" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-clinical-accent mt-1" placeholder="Patient name or notes...">
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold uppercase text-slate-400 tracking-wider">Condition</label>
+                        <select id="filter-disease" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-clinical-accent mt-1">
+                            <option value="">All Conditions</option>
+                            <option value="Basal Cell Carcinoma">Basal Cell Carcinoma</option>
+                            <option value="Melanoma">Melanoma</option>
+                            <option value="Benign Nevus">Benign Nevus</option>
+                            <option value="Seborrheic Keratosis">Seborrheic Keratosis</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold uppercase text-slate-400 tracking-wider">Model Used</label>
+                        <select id="filter-model" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-clinical-accent mt-1">
+                            <option value="">All Models</option>
+                            <option value="Standard Model (EfficientNet-B0)">EfficientNet-B0</option>
+                            <option value="Ensemble Mode (B0 + B5) - Recommended">Ensemble (B0 + B5)</option>
+                        </select>
+                    </div>
+                    <div class="flex items-end">
+                        <button id="search-btn" class="w-full py-2 bg-clinical-accentDeep hover:bg-clinical-accent text-clinical-bg font-bold text-sm rounded-xl transition duration-300">
+                            <i class="fa-solid fa-magnifying-glass"></i> Search
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- History log table -->
+            <div class="glass-card overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left text-slate-400">
+                        <thead class="text-xs uppercase bg-slate-900/50 text-slate-300 border-b border-slate-800">
+                            <tr>
+                                <th class="px-6 py-4">Date</th>
+                                <th class="px-6 py-4">Patient ID</th>
+                                <th class="px-6 py-4">Class Target</th>
+                                <th class="px-6 py-4">Probability</th>
+                                <th class="px-6 py-4">Model Pipeline</th>
+                                <th class="px-6 py-4 text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-table-body">
+                            <!-- Populated in JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB: BENCHMARK ==================== -->
+        <section id="benchmark-tab" class="tab-pane hidden space-y-8">
+            <div>
+                <h2 class="font-['Outfit'] font-extrabold text-3xl tracking-tight bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">Model Comparison & Benchmark</h2>
+                <p class="text-slate-400 text-sm mt-1">Examine model architectural parameters, parameters complexity, and accuracy metrics for academic review.</p>
+            </div>
+
+            <div class="glass-card overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left text-slate-400">
+                        <thead class="text-xs uppercase bg-slate-900/50 text-slate-300 border-b border-slate-800">
+                            <tr>
+                                <th class="px-6 py-4">Inference Model</th>
+                                <th class="px-6 py-4">Test Accuracy</th>
+                                <th class="px-6 py-4">Precision</th>
+                                <th class="px-6 py-4">Recall / Sens.</th>
+                                <th class="px-6 py-4">F1 Score</th>
+                                <th class="px-6 py-4">Params</th>
+                                <th class="px-6 py-4">Inference Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b border-slate-800/50 hover:bg-slate-800/10">
+                                <td class="px-6 py-4 font-semibold text-slate-200">EfficientNet-B5 (EMA)</td>
+                                <td class="px-6 py-4 text-clinical-success font-bold">97.14%</td>
+                                <td class="px-6 py-4">96.90%</td>
+                                <td class="px-6 py-4 text-clinical-purple font-semibold">97.35%</td>
+                                <td class="px-6 py-4">97.12%</td>
+                                <td class="px-6 py-4 text-xs font-mono">30M</td>
+                                <td class="px-6 py-4 text-xs font-mono text-clinical-accent">0.112s</td>
+                            </tr>
+                            <tr class="border-b border-slate-800/50 hover:bg-slate-800/10">
+                                <td class="px-6 py-4 font-semibold text-slate-200">EfficientNet-B0 (EMA)</td>
+                                <td class="px-6 py-4 text-clinical-success font-bold">94.15%</td>
+                                <td class="px-6 py-4">93.80%</td>
+                                <td class="px-6 py-4 text-clinical-purple font-semibold">94.48%</td>
+                                <td class="px-6 py-4">94.14%</td>
+                                <td class="px-6 py-4 text-xs font-mono">6M</td>
+                                <td class="px-6 py-4 text-xs font-mono text-clinical-accent">0.038s</td>
+                            </tr>
+                            <tr class="border-b border-slate-800/50 hover:bg-slate-800/10">
+                                <td class="px-6 py-4 font-semibold text-slate-200">ResNet-50</td>
+                                <td class="px-6 py-4 text-clinical-success font-bold">91.80%</td>
+                                <td class="px-6 py-4">91.20%</td>
+                                <td class="px-6 py-4 text-clinical-purple font-semibold">92.05%</td>
+                                <td class="px-6 py-4">91.62%</td>
+                                <td class="px-6 py-4 text-xs font-mono">25M</td>
+                                <td class="px-6 py-4 text-xs font-mono text-clinical-accent">0.062s</td>
+                            </tr>
+                            <tr class="border-b border-slate-800/50 hover:bg-slate-800/10">
+                                <td class="px-6 py-4 font-semibold text-slate-200">DenseNet-121</td>
+                                <td class="px-6 py-4 text-clinical-success font-bold">92.42%</td>
+                                <td class="px-6 py-4">91.90%</td>
+                                <td class="px-6 py-4 text-clinical-purple font-semibold">92.80%</td>
+                                <td class="px-6 py-4">92.35%</td>
+                                <td class="px-6 py-4 text-xs font-mono">8M</td>
+                                <td class="px-6 py-4 text-xs font-mono text-clinical-accent">0.075s</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB: TRAINING ==================== -->
+        <section id="training-tab" class="tab-pane hidden space-y-8">
+            <div>
+                <h2 class="font-['Outfit'] font-extrabold text-3xl tracking-tight bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">Model Training Control Room</h2>
+                <p class="text-slate-400 text-sm mt-1">Monitor live model optimizations, loss logs, and GPU temperature metrics.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Live statistics -->
+                <div class="glass-card p-6 md:col-span-2 space-y-6">
+                    <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                        <h4 class="font-['Outfit'] font-bold text-lg"><i class="fa-solid fa-gauge-simple text-clinical-purple"></i> Active Optimization Status</h4>
+                        <span class="px-2.5 py-1 bg-purple-500/10 text-clinical-purple border border-purple-500/20 text-xs font-bold rounded-lg uppercase">Idle / Standby</span>
+                    </div>
+
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                        <div class="space-y-1">
+                            <span class="text-xs text-slate-400 font-semibold">Current Epoch</span>
+                            <h3 class="font-['Outfit'] text-2xl font-bold">30 / 30</h3>
+                        </div>
+                        <div class="space-y-1">
+                            <span class="text-xs text-slate-400 font-semibold">Training Loss</span>
+                            <h3 class="font-['Outfit'] text-2xl font-bold text-clinical-accent">0.0842</h3>
+                        </div>
+                        <div class="space-y-1">
+                            <span class="text-xs text-slate-400 font-semibold">Validation Loss</span>
+                            <h3 class="font-['Outfit'] text-2xl font-bold text-clinical-purple">0.0912</h3>
+                        </div>
+                        <div class="space-y-1">
+                            <span class="text-xs text-slate-400 font-semibold">Learning Rate</span>
+                            <h3 class="font-['Outfit'] text-2xl font-bold font-mono">1e-4</h3>
+                        </div>
+                    </div>
+
+                    <!-- Progress bar -->
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-xs text-slate-400 font-semibold">
+                            <span>Optimization Progress</span>
+                            <span>100% Completed</span>
+                        </div>
+                        <div class="w-full bg-slate-800 rounded-full h-3">
+                            <div class="bg-gradient-to-r from-clinical-accent to-clinical-purple h-3 rounded-full" style="width: 100%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Loss logs -->
+                <div class="glass-card p-6 flex flex-col justify-between">
+                    <h4 class="font-['Outfit'] font-bold text-lg border-b border-slate-800 pb-3"><i class="fa-solid fa-microchip text-clinical-accent"></i> Engine Temperature</h4>
+                    <div class="space-y-3 mt-4 text-sm">
+                        <div class="flex justify-between"><span class="text-slate-400">GPU Core Temp:</span><strong class="text-slate-200">72°C</strong></div>
+                        <div class="flex justify-between"><span class="text-slate-400">VRAM Allocation:</span><strong class="text-slate-200">3.8 GB / 4.0 GB</strong></div>
+                        <div class="flex justify-between"><span class="text-slate-400">Backpropagation Loss:</span><strong class="text-clinical-purple">Hybrid FL-CE</strong></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB: ADMIN ==================== -->
+        <section id="admin-tab" class="tab-pane hidden space-y-8">
+            <div>
+                <h2 class="font-['Outfit'] font-extrabold text-3xl tracking-tight bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">Admin Management Center</h2>
+                <p class="text-slate-400 text-sm mt-1">Configure users credentials, clinical doctors keys, and server API tokens.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- API tokens -->
+                <div class="glass-card p-6 space-y-6">
+                    <h4 class="font-['Outfit'] font-bold text-lg border-b border-slate-800 pb-3"><i class="fa-solid fa-key text-clinical-accent"></i> Active Server API Keys</h4>
+                    <div class="space-y-4">
+                        <div class="p-4 bg-slate-900/50 border border-slate-800 rounded-xl space-y-2">
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm font-semibold text-slate-200">Doctor Diagnostic API Key</span>
+                                <span class="px-2 py-0.5 bg-emerald-500/10 text-clinical-success border border-emerald-500/20 font-bold text-[10px] uppercase rounded">Active</span>
+                            </div>
+                            <code class="text-xs text-clinical-accent block font-mono">sk_clinical_bcc_8a9f234bc98df12e</code>
+                        </div>
+
+                        <div class="p-4 bg-slate-900/50 border border-slate-800 rounded-xl space-y-2">
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm font-semibold text-slate-200">External Lab Integration API Key</span>
+                                <span class="px-2 py-0.5 bg-emerald-500/10 text-clinical-success border border-emerald-500/20 font-bold text-[10px] uppercase rounded">Active</span>
+                            </div>
+                            <code class="text-xs text-clinical-accent block font-mono">sk_clinical_lab_ff8219034bc89e3a</code>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Server configurations -->
+                <div class="glass-card p-6 space-y-4">
+                    <h4 class="font-['Outfit'] font-bold text-lg border-b border-slate-800 pb-3"><i class="fa-solid fa-gears text-clinical-accent"></i> General Settings</h4>
+                    <div class="space-y-4 text-sm">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <strong class="text-slate-200 block">Debug Logging Mode</strong>
+                                <span class="text-xs text-slate-400">Save server runtime trace inside outputs/app.log</span>
+                            </div>
+                            <label class="switch relative inline-block w-12 h-6">
+                                <input type="checkbox" checked class="opacity-0 w-0 h-0">
+                                <span class="slider round absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-slate-800 border border-slate-700 transition duration-300 rounded-full before:absolute before:content-[''] before:h-4 before:w-4 before:left-1 before:bottom-0.7 before:bg-white before:transition before:duration-300 before:rounded-full"></span>
+                            </label>
+                        </div>
+
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <strong class="text-slate-200 block">Auto-Download Backup Logs</strong>
+                                <span class="text-xs text-slate-400">Periodically backup prediction logs to disk</span>
+                            </div>
+                            <label class="switch relative inline-block w-12 h-6">
+                                <input type="checkbox" class="opacity-0 w-0 h-0">
+                                <span class="slider round absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-slate-800 border border-slate-700 transition duration-300 rounded-full before:absolute before:content-[''] before:h-4 before:w-4 before:left-1 before:bottom-0.7 before:bg-white before:transition before:duration-300 before:rounded-full"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Chart.js and jsPDF -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <!-- Custom JS script link -->
+    <script src="/static/dashboard.js"></script>
+</body>
+</html>

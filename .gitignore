@@ -1,0 +1,31 @@
+# Environments
+.venv/
+.venv*/
+venv/
+ENV/
+env/
+
+# Python Cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Large Datasets & Archives
+dataset/
+datasets/
+data/
+*.zip
+*.tar.gz
+*.pth
+*.pt
+database.db
+server_startup.log
+
+# Temporary directories
+scratch/
+{src,configs,scripts,outputs,data/
+
+# IDE / OS files
+.DS_Store
+.vscode/
+.idea/

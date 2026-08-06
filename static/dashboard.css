@@ -1,0 +1,172 @@
+/* ==========================================================
+   GLOBAL VARIABLES & IMPORTS
+   ========================================================== */
+:root {
+    --bg-app: #0b1329;
+    --bg-card: #1c2541;
+    --border-color: rgba(255, 255, 255, 0.08);
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --accent-blue: #00f2fe;
+    --accent-blue-deep: #4facfe;
+    --accent-purple: #f093fb;
+    --danger: #ef4444;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --shadow: rgba(0, 0, 0, 0.25);
+    --font-heading: 'Outfit', sans-serif;
+    --font-body: 'Inter', sans-serif;
+}
+
+/* Light Mode Overrides */
+html:not(.dark) {
+    --bg-app: #f1f5f9;
+    --bg-card: #ffffff;
+    --border-color: rgba(0, 0, 0, 0.08);
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --accent-blue: #2563eb;
+    --accent-blue-deep: #1d4ed8;
+    --accent-purple: #9333ea;
+    --shadow: rgba(0, 0, 0, 0.05);
+}
+
+body {
+    background-color: var(--bg-app);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ==========================================================
+   SIDEBAR NAVIGATION
+   ========================================================== */
+.nav-item {
+    color: var(--text-secondary);
+    background-color: transparent;
+}
+
+.nav-item:hover {
+    color: var(--text-primary);
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+html:not(.dark) .nav-item:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+.nav-item.active {
+    color: var(--bg-app);
+    background: linear-gradient(135deg, var(--accent-blue-deep), var(--accent-blue));
+    box-shadow: 0 4px 15px rgba(0, 242, 254, 0.2);
+}
+
+html:not(.dark) .nav-item.active {
+    color: #ffffff;
+}
+
+/* ==========================================================
+   GLASS CARDS & LAYOUTS
+   ========================================================== */
+.glass-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    box-shadow: 0 4px 20px var(--shadow);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.glass-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px var(--shadow);
+}
+
+/* ==========================================================
+   CUSTOM FORM ELEMENTS
+   ========================================================== */
+.switch input:checked + .slider {
+    background: linear-gradient(135deg, var(--accent-blue-deep), var(--accent-blue));
+    border-color: transparent;
+    box-shadow: 0 0 10px rgba(0, 242, 254, 0.3);
+}
+
+.switch input:checked + .slider:before {
+    transform: translateX(24px);
+    background-color: var(--bg-card);
+}
+
+/* ==========================================================
+   PROBABILITY RISK GAUGE
+   ========================================================== */
+.confidence-bar-bg {
+    position: relative;
+    background-color: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--border-color);
+    height: 14px;
+    border-radius: 20px;
+    overflow: visible;
+}
+
+html:not(.dark) .confidence-bar-bg {
+    background-color: rgba(0, 0, 0, 0.06);
+}
+
+.confidence-bar-fill {
+    height: 100%;
+    border-radius: 20px;
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Threshold line indicators */
+.threshold-tick {
+    position: absolute;
+    top: -4px;
+    bottom: -4px;
+    width: 2px;
+    background-color: var(--accent-purple);
+    box-shadow: 0 0 8px var(--accent-purple);
+    z-index: 10;
+    transition: left 0.3s ease;
+}
+
+.threshold-tick::after {
+    content: var(--threshold-label, 'T=40%');
+    position: absolute;
+    top: -16px;
+    left: -14px;
+    font-size: 0.65rem;
+    color: var(--accent-purple);
+    font-weight: 800;
+}
+
+/* Warning Alerts */
+.threshold-explanation {
+    margin-top: 0.5rem;
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    background-color: rgba(240, 147, 251, 0.05);
+    border: 1px solid rgba(240, 147, 251, 0.15);
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    line-height: 1.45;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.threshold-explanation i {
+    color: var(--accent-purple);
+    font-size: 1rem;
+}
+
+/* ==========================================================
+   UTILITY ANIMATIONS
+   ========================================================== */
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.spinner {
+    border-top-color: var(--accent-blue);
+    animation: spin 1s linear infinite;
+}

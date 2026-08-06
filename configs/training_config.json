@@ -1,0 +1,19 @@
+{
+  "model": {
+    "backbone": "efficientnet_b0",
+    "use_se": true,
+    "use_cbam": true,
+    "use_stn": true,
+    "use_fpn": false,
+    "use_bifpn": false,
+    "num_classes": 9,
+    "calibrated_threshold": 0.40
+  },
+  "training": {
+    "learning_rate": 1e-4,
+    "batch_size": 16,
+    "epochs": 30,
+    "loss_lambda": 0.5,
+    "temperature": 1.4799
+  }
+}

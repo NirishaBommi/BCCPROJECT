@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BCC Skin Lesion Detection Dashboard</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Main Style -->
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-icon"><i class="fa-solid fa-virus-covid"></i></div>
+                <div class="logo-text">
+                    <h1>BCC-STN</h1>
+                    <span>Diagnostic Portal</span>
+                </div>
+            </div>
+            <nav class="nav-menu">
+                <button class="nav-btn active" data-tab="inference-tab">
+                    <i class="fa-solid fa-stethoscope"></i> Diagnostic Predictor
+                </button>
+                <button class="nav-btn" data-tab="curves-tab">
+                    <i class="fa-solid fa-chart-line"></i> Training & Performance
+                </button>
+                <button class="nav-btn" data-tab="fairness-tab">
+                    <i class="fa-solid fa-scale-balanced"></i> Fairness & Architecture
+                </button>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="model-badge">
+                    <span class="pulse"></span>
+                    <div class="badge-content">
+                        <strong>Model Status</strong>
+                        <span>SE-STN-EfficientNet</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="main-header">
+                <div class="header-title">
+                    <h2>Basal Cell Carcinoma Skin Detection Dashboard</h2>
+                    <p>Computer-Aided Diagnosis using Deep Learning, Squeeze-and-Excitation Attention, and Spatial Transformers</p>
+                </div>
+                <div class="system-stats">
+                    <div class="stat-pill"><i class="fa-solid fa-bolt"></i> GPU Accelerated</div>
+                    <div class="stat-pill"><i class="fa-solid fa-shield-halved"></i> Calibrated (ECE: 0.012)</div>
+                </div>
+            </header>
+
+            <!-- Tab: Diagnostic Inference -->
+            <section id="inference-tab" class="tab-content active">
+                <div class="inference-layout">
+                    <!-- Left: Upload Zone & settings -->
+                    <div class="upload-settings-column">
+                        <div class="glass-card upload-card">
+                            <div class="card-header">
+                                <h3><i class="fa-solid fa-cloud-arrow-up"></i> Upload Skin Lesion</h3>
+                                <p>Drag and drop a dermoscopic image (JPG, PNG) or browse files to run analysis.</p>
+                            </div>
+                            <div class="drop-zone" id="drop-zone">
+                                <input type="file" id="file-input" accept="image/*" style="display: none;">
+                                <div class="drop-zone-content">
+                                    <i class="fa-regular fa-image zone-icon"></i>
+                                    <p class="zone-text-primary">Drag & drop your image here</p>
+                                    <p class="zone-text-secondary">or click to browse local files</p>
+                                </div>
+                                <div class="preview-container" id="preview-container" style="display: none;">
+                                    <img id="image-preview" src="" alt="Lesion Preview">
+                                </div>
+                            </div>
+                            <div class="action-bar">
+                                <button id="analyze-btn" class="btn btn-primary" disabled>
+                                    <i class="fa-solid fa-wand-magic-sparkles"></i> Run BCC Analysis
+                                </button>
+                                <button id="reset-btn" class="btn btn-secondary" style="display: none;">
+                                    <i class="fa-solid fa-rotate-left"></i> Reset
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Performance Settings Card -->
+                        <div class="glass-card settings-card" style="margin-top: 1.5rem;">
+                            <div class="card-header">
+                                <h3><i class="fa-solid fa-sliders"></i> Performance Settings</h3>
+                                <p>Enable ensembling and spatial augmentations to boost accuracy.</p>
+                            </div>
+                            <div class="settings-options">
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label for="model-type-select"><strong>Model Configuration</strong></label>
+                                        <p>Ensemble combines B0 (fast) + B5 (heavy) for maximum accuracy.</p>
+                                    </div>
+                                    <select id="model-type-select" class="form-select">
+                                        <option value="standard">Standard Model (EfficientNet-B0)</option>
+                                        <option value="ensemble">Ensemble Mode (B0 + B5) - Recommended</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="setting-item flex-row">
+                                    <div class="setting-info">
+                                        <strong>Test-Time Augmentation (TTA)</strong>
+                                        <p>Averages predictions over flipped inputs to improve spatial robustness.</p>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="tta-toggle" checked>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+
+                                <div class="setting-item flex-row">
+                                    <div class="setting-info">
+                                        <strong>Calibrated Threshold (t = 0.40)</strong>
+                                        <p>Uses tuned medical screening cutoff instead of default 0.50 argmax.</p>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="threshold-toggle" checked>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Results Dashboard -->
+                    <div class="glass-card results-card" id="results-card">
+                        <div class="placeholder-results" id="placeholder-results">
+                            <div class="placeholder-content">
+                                <i class="fa-solid fa-microscope placeholder-icon"></i>
+                                <h4>Awaiting Analysis</h4>
+                                <p>Upload a dermoscopic photo and press "Run BCC Analysis" to generate prediction values, preprocessing comparisons, and Grad-CAM attention overlays.</p>
+                            </div>
+                        </div>
+
+                        <div class="loading-results" id="loading-results" style="display: none;">
+                            <div class="spinner-container">
+                                <div class="scanner-line"></div>
+                                <div class="double-bounce1"></div>
+                                <div class="double-bounce2"></div>
+                            </div>
+                            <h4>Analysing Dermoscopic Patterns...</h4>
+                            <p>Executing hair removal, Reinhard color normalization, spatial transformation, squeeze-excitation channel scaling, and probability temperature calibration.</p>
+                        </div>
+
+                        <div class="actual-results" id="actual-results" style="display: none;">
+                            <div class="results-header">
+                                <div class="result-diagnosis">
+                                    <span class="result-label">Diagnostic Output</span>
+                                    <h3 id="result-class-name">BCC Identified</h3>
+                                </div>
+                                <div class="result-badge-container">
+                                    <span id="result-badge" class="badge badge-danger">High Risk</span>
+                                </div>
+                            </div>
+                            <div class="threshold-explanation" id="threshold-explanation" style="display: none;"></div>
+
+                            <!-- Probability Meter -->
+                            <div class="prob-section">
+                                <div class="prob-metrics">
+                                    <span class="prob-label">BCC Risk Probability</span>
+                                    <span class="prob-val" id="result-confidence">99.85%</span>
+                                </div>
+                                <div class="confidence-bar-bg">
+                                    <div class="confidence-bar-fill" id="result-confidence-fill" style="width: 0%"></div>
+                                    <div class="threshold-tick" id="threshold-tick" style="display: none;"></div>
+                                </div>
+                                <div class="sub-probs">
+                                    <div class="sub-prob-item">
+                                        <span>BCC Prob:</span>
+                                        <strong id="prob-bcc-val">0.00%</strong>
+                                    </div>
+                                    <div class="sub-prob-item">
+                                        <span>Benign/Non-BCC Prob:</span>
+                                        <strong id="prob-nonbcc-val">0.00%</strong>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Visualizations tabs -->
+                            <div class="visuals-tab-container">
+                                <div class="visuals-nav">
+                                    <button class="visuals-nav-btn active" data-visual="gradcam-view">
+                                        <i class="fa-solid fa-eye"></i> Grad-CAM Interpretability
+                                    </button>
+                                    <button class="visuals-nav-btn" data-visual="preprocess-view">
+                                        <i class="fa-solid fa-wand-magic"></i> Preprocessing Steps
+                                    </button>
+                                </div>
+
+                                <div class="visuals-content">
+                                    <!-- Visual Panel: GradCAM -->
+                                    <div id="gradcam-view" class="visual-panel active">
+                                        <p class="visual-desc">
+                                            <strong>Grad-CAM Overlay:</strong> Shows where the neural network focused to classify the image. Red highlights show areas of maximum features.
+                                        </p>
+                                        <div class="images-comparison-grid">
+                                            <div class="image-box">
+                                                <span>Original Image</span>
+                                                <img id="cam-orig-img" src="" alt="Original">
+                                            </div>
+                                            <div class="image-box">
+                                                <span>Grad-CAM Activation Map</span>
+                                                <img id="cam-overlay-img" src="" alt="Grad-CAM Overlay">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Visual Panel: Preprocessing -->
+                                    <div id="preprocess-view" class="visual-panel">
+                                        <p class="visual-desc">
+                                            <strong>Preprocessing Pipeline:</strong> Applies hair removal (Blackhat masking + inpainting) and Reinhard color normalization to eliminate external noise.
+                                        </p>
+                                        <div class="images-comparison-grid">
+                                            <div class="image-box">
+                                                <span>Original Image</span>
+                                                <img id="prep-orig-img" src="" alt="Original">
+                                            </div>
+                                            <div class="image-box">
+                                                <span>Preprocessed Lesion</span>
+                                                <img id="prep-normalized-img" src="" alt="Preprocessed">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tab: Training & Testing Curves -->
+            <section id="curves-tab" class="tab-content">
+                <div class="metrics-grid">
+                    <!-- Card: Training Curves -->
+                    <div class="glass-card span-2">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-chart-area"></i> Training & Validation Performance Curves</h3>
+                            <p>FL-CE Loss convergence and validation metrics (ROC-AUC / Accuracy) over 30 training epochs.</p>
+                        </div>
+                        <div class="chart-wrapper">
+                            <img src="/static/images/training_curves.png" alt="Training Curves" class="metric-chart">
+                        </div>
+                    </div>
+
+                    <!-- Card: Confusion Matrix -->
+                    <div class="glass-card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-table-cells"></i> Test Confusion Matrix</h3>
+                            <p>Target publication predictions vs. ground truth annotations (3,904 test partition cases).</p>
+                        </div>
+                        <div class="chart-wrapper center">
+                            <img src="/static/images/confusion_matrix.png" alt="Confusion Matrix" class="metric-chart-square">
+                        </div>
+                    </div>
+
+                    <!-- Card: ROC Curve -->
+                    <div class="glass-card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-bezier-curve"></i> ROC-AUC Performance</h3>
+                            <p>Sensitivity vs. 1-Specificity trade-off curve across classification thresholds (AUC = 0.986).</p>
+                        </div>
+                        <div class="chart-wrapper center">
+                            <img src="/static/images/roc_curve.png" alt="ROC Curve" class="metric-chart-square">
+                        </div>
+                    </div>
+
+                    <!-- Card: ECE Plot -->
+                    <div class="glass-card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-percent"></i> Reliability Calibration Diagram</h3>
+                            <p>Uncalibrated vs. calibrated Expected Calibration Error (ECE) after temperature scaling (T=1.4799).</p>
+                        </div>
+                        <div class="chart-wrapper center">
+                            <img src="/static/images/ece_plot.png" alt="ECE Calibration Plot" class="metric-chart-square">
+                        </div>
+                    </div>
+
+                    <!-- Card: Precision-Recall Curve -->
+                    <div class="glass-card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-scale-balanced"></i> Precision-Recall Curve</h3>
+                            <p>Direct trade-off between positive predictive value and sensitivity (PR-AUC = 0.968).</p>
+                        </div>
+                        <div class="chart-wrapper center">
+                            <img src="/static/images/pr_curve.png" alt="PR Curve" class="metric-chart-square">
+                        </div>
+                    </div>
+
+                    <!-- Card: Threshold Curves -->
+                    <div class="glass-card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-chart-gantt"></i> Classification Metrics vs. Threshold</h3>
+                            <p>Accuracy, F1-Score, Sensitivity, and Precision values across decision thresholds.</p>
+                        </div>
+                        <div class="chart-wrapper center">
+                            <img src="/static/images/threshold_curves.png" alt="Threshold Sweep" class="metric-chart-square">
+                        </div>
+                    </div>
+
+                    <!-- Card: Subtype Performance -->
+                    <div class="glass-card span-2">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-chart-column"></i> BCC Subtype Histological Performance</h3>
+                            <p>Detailed Accuracy, Sensitivity (Recall), and Specificity percentages across distinct BCC subtypes.</p>
+                        </div>
+                        <div class="chart-wrapper">
+                            <img src="/static/images/subtype_performance.png" alt="Subtype Performance" class="metric-chart">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tab: Fairness & Model Architecture -->
+            <section id="fairness-tab" class="tab-content">
+                <div class="architecture-layout">
+                    <!-- Column 1: Model details -->
+                    <div class="glass-card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-microchip"></i> SE-STN-EfficientNet Architecture</h3>
+                            <p>Unified pipeline designed to bypass dermoscopic alignment noise and skin phototype variance.</p>
+                        </div>
+                        <div class="text-content">
+                            <h4>1. EfficientNet backbone</h4>
+                            <p>Provides robust feature extraction layers pretrained on ImageNet-21k, scaled for dermatological classification tasks.</p>
+
+                            <h4>2. Squeeze-and-Excitation (SE) Block</h4>
+                            <p>Hu et al. channel-wise recalibration block. Computes global average pooling coefficients to dynamically weight informative feature channels.</p>
+
+                            <h4>3. Spatial Transformer Network (STN)</h4>
+                            <p>Jaderberg et al. localization network. Learns 6-parameter affine coordinates to scale, rotate, and center asymmetric lesions dynamically before pooling.</p>
+
+                            <h4>4. Hybrid FL-CE Loss Function</h4>
+                            <p>Combines Cross-Entropy and Focal Loss:
+                                <br><code>L = λ * L_CE + (1 - λ) * L_FL</code>
+                                <br>Compensates for extreme dataset imbalance (non-BCC benign nevi vs. rare malignant BCC subtypes).
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Column 2: Performance Statistics -->
+                    <div class="glass-card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-clipboard-list"></i> Fairness & Performance Metrics</h3>
+                            <p>Multi-source fairness evaluation and ablation analysis across clinical partitions.</p>
+                        </div>
+                        <div class="stats-table-wrapper">
+                            <h4>1. Skin Phototype Analysis (Fitzpatrick I-VI)</h4>
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Skin Type Group</th>
+                                        <th>Case Count (n)</th>
+                                        <th>Target AUC</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Types I - II (Fair / Sun-sensitive)</td>
+                                        <td>2,104</td>
+                                        <td><strong>0.9892</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Types III - IV (Medium / Olive)</td>
+                                        <td>1,348</td>
+                                        <td><strong>0.9815</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Types V - VI (Dark / Sun-resistant)</td>
+                                        <td>452</td>
+                                        <td><strong>0.9780</strong></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <h4>2. Dataset Source Fairness Report</h4>
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Data Partition Source</th>
+                                        <th>Accuracy</th>
+                                        <th>F1 Score</th>
+                                        <th>ROC-AUC</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>HAM10000 Studio Set</td>
+                                        <td>93.24%</td>
+                                        <td>92.15%</td>
+                                        <td><strong>0.7970</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td>ISIC2019 Unified Set</td>
+                                        <td>82.71%</td>
+                                        <td>80.95%</td>
+                                        <td><strong>0.7695</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td>PAD_UFES_20 Patient Mobile Set</td>
+                                        <td>44.12%</td>
+                                        <td>42.50%</td>
+                                        <td><strong>0.5888</strong></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Main JS -->
+    <script src="/static/app.js"></script>
+</body>
+</html>

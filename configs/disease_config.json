@@ -1,0 +1,76 @@
+{
+  "classes": [
+    {
+      "id": 0,
+      "name": "Basal Cell Carcinoma",
+      "abbreviation": "BCC",
+      "risk_level": "Red",
+      "description": "A common type of skin cancer that begins in the basal cells, typically appearing as a pearly or waxy bump on sun-exposed skin.",
+      "severity": "High"
+    },
+    {
+      "id": 1,
+      "name": "Melanoma",
+      "abbreviation": "MEL",
+      "risk_level": "Red",
+      "description": "The most serious type of skin cancer, developing in the cells (melanocytes) that produce melanin. Often characterized by irregular moles.",
+      "severity": "Critical"
+    },
+    {
+      "id": 2,
+      "name": "Benign Nevus",
+      "abbreviation": "NV",
+      "risk_level": "Green",
+      "description": "A common benign skin growth, commonly referred to as a mole, composed of pigmented melanocytic cells.",
+      "severity": "Low"
+    },
+    {
+      "id": 3,
+      "name": "Seborrheic Keratosis",
+      "abbreviation": "BKL",
+      "risk_level": "Green",
+      "description": "A non-cancerous skin growth that typically appears as a waxy, scaly, or 'stuck-on' lesion on the face, chest, or back.",
+      "severity": "Low"
+    },
+    {
+      "id": 4,
+      "name": "Dermatofibroma",
+      "abbreviation": "DF",
+      "risk_level": "Green",
+      "description": "A common, harmless, firm red-to-brown bump on the skin, typically found on the legs, representing a benign fibrous skin lesion.",
+      "severity": "Low"
+    },
+    {
+      "id": 5,
+      "name": "Vascular Lesion",
+      "abbreviation": "VASC",
+      "risk_level": "Yellow",
+      "description": "Benign growths of blood vessels in the skin, such as cherry angiomas, hemangiomas, or pyogenic granulomas.",
+      "severity": "Moderate"
+    },
+    {
+      "id": 6,
+      "name": "Actinic Keratosis",
+      "abbreviation": "AK",
+      "risk_level": "Orange",
+      "description": "A rough, scaly patch on the skin caused by years of sun exposure. It is a precancerous lesion that can turn into SCC if untreated.",
+      "severity": "Moderate"
+    },
+    {
+      "id": 7,
+      "name": "Squamous Cell Carcinoma",
+      "abbreviation": "SCC",
+      "risk_level": "Red",
+      "description": "A common form of skin cancer that develops in the squamous cells of the outer layer of the skin, often presenting as a firm red nodule.",
+      "severity": "High"
+    },
+    {
+      "id": 8,
+      "name": "Unknown / Non-Diagnostic",
+      "abbreviation": "UNK",
+      "risk_level": "Yellow",
+      "description": "Insufficient structural patterns identified in the dermoscopic image to classify. Further imaging or clinical biopsy suggested.",
+      "severity": "Unknown"
+    }
+  ]
+}

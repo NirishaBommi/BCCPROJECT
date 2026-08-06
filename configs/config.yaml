@@ -1,0 +1,48 @@
+# =============================================================================
+#  config.yaml  —  Training Configuration
+#  Paper: "Basal Cell Carcinoma Skin Detection Using Deep Learning"
+# =============================================================================
+
+data:
+  train_csv   : "./data/train.csv"
+  val_csv     : "./data/val.csv"
+  test_csv    : "./data/test.csv"
+  root_dir    : "./data"
+  mode        : "binary"         # "binary" | "subtype"
+  num_classes : 2
+  preprocess  : true
+  batch_size  : 32
+  num_workers : 8
+
+model:
+  backbone     : "efficientnet_b5"
+  pretrained   : true
+  se_reduction : 16
+  dropout      : 0.5
+
+loss:
+  lambda_mix  : 0.6
+  gamma       : 2.0
+  alpha       : 0.75
+
+optimiser:
+  lr           : 1.0e-4
+  weight_decay : 1.0e-5
+  T_0          : 10
+  T_mult       : 2
+  accum_steps  : 4
+  cutmix_prob  : 0.5
+
+ema:
+  decay        : 0.9999
+
+swa:
+  start_epoch  : 100
+
+training:
+  epochs       : 120
+  patience     : 20
+  device       : "cuda"
+
+output:
+  dir          : "./outputs"
