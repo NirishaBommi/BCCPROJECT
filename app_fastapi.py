@@ -58,55 +58,58 @@ device = 'cuda' if torch.cuda.is_available() else 'cpu'
 def startup_event():
     init_db()
 
-# Load Primary Checkpoint (EfficientNet-B0)
+# Lazy Model Initialization for low memory footprint (<250MB RAM)
 ckpt_path = os.path.join('outputs', 'best_model.pth')
+ckpt_backup_path = os.path.join('outputs', 'best_model_backup.pth')
+
 model = None
+model_backup = None
+explain_engine = None
 temperature = 1.4799
 
-if os.path.exists(ckpt_path):
-    print(f"[FastAPI] Loading primary checkpoint from {ckpt_path}...")
-    ckpt = torch.load(ckpt_path, map_location=device)
-    backbone = 'efficientnet_b0'
-    if isinstance(ckpt, dict) and 'config' in ckpt:
-        backbone = ckpt['config'].get('backbone', 'efficientnet_b0')
-    
-    if backbone != 'efficientnet_b5':
-        import timm
-        original_create_model = timm.create_model
-        timm.create_model = lambda name, **kwargs: original_create_model(backbone, **kwargs)
-        model = build_model(num_classes=2, pretrained=False).to(device)
-        timm.create_model = original_create_model
-    else:
-        model = build_model(num_classes=2, pretrained=False).to(device)
-        
-    state = ckpt.get('ema_state', ckpt.get('model_state', ckpt))
-    model.load_state_dict(state, strict=True)
-    model.eval()
-    print("[FastAPI] Primary model loaded successfully.")
-else:
-    print(f"[FastAPI] WARNING: Primary checkpoint not found at {ckpt_path}.")
+def get_primary_model():
+    global model, explain_engine
+    if model is None and os.path.exists(ckpt_path):
+        try:
+            print(f"[FastAPI] Loading primary checkpoint from {ckpt_path}...")
+            ckpt = torch.load(ckpt_path, map_location=device)
+            backbone = 'efficientnet_b0'
+            if isinstance(ckpt, dict) and 'config' in ckpt:
+                backbone = ckpt['config'].get('backbone', 'efficientnet_b0')
+            
+            if backbone != 'efficientnet_b5':
+                import timm
+                original_create_model = timm.create_model
+                timm.create_model = lambda name, **kwargs: original_create_model(backbone, **kwargs)
+                model = build_model(num_classes=2, pretrained=False).to(device)
+                timm.create_model = original_create_model
+            else:
+                model = build_model(num_classes=2, pretrained=False).to(device)
+                
+            state = ckpt.get('ema_state', ckpt.get('model_state', ckpt))
+            model.load_state_dict(state, strict=True)
+            model.eval()
+            explain_engine = ClinicalExplainEngine(model, model.se_blocks[-1])
+            print("[FastAPI] Primary model loaded successfully.")
+        except Exception as e:
+            print(f"[FastAPI] Primary model load error: {e}")
+    return model
 
-# Load Backup Checkpoint (EfficientNet-B5)
-ckpt_backup_path = os.path.join('outputs', 'best_model_backup.pth')
-model_backup = None
+def get_backup_model():
+    global model_backup
+    if model_backup is None and os.path.exists(ckpt_backup_path):
+        try:
+            print(f"[FastAPI] Loading backup checkpoint from {ckpt_backup_path}...")
+            ckpt_b = torch.load(ckpt_backup_path, map_location=device)
+            model_backup = build_model(num_classes=2, pretrained=False).to(device)
+            state_b = ckpt_b.get('ema_state', ckpt_b.get('model_state', ckpt_b))
+            model_backup.load_state_dict(state_b, strict=True)
+            model_backup.eval()
+            print("[FastAPI] Backup model (B5) loaded successfully.")
+        except Exception as e:
+            print(f"[FastAPI] Error loading backup checkpoint: {e}")
+    return model_backup
 
-if os.path.exists(ckpt_backup_path):
-    print(f"[FastAPI] Loading backup checkpoint from {ckpt_backup_path}...")
-    try:
-        ckpt_b = torch.load(ckpt_backup_path, map_location=device)
-        model_backup = build_model(num_classes=2, pretrained=False).to(device)
-        state_b = ckpt_b.get('ema_state', ckpt_b.get('model_state', ckpt_b))
-        model_backup.load_state_dict(state_b, strict=True)
-        model_backup.eval()
-        print("[FastAPI] Backup model (B5) loaded successfully.")
-    except Exception as e:
-        print(f"[FastAPI] Error loading backup checkpoint: {e}")
-
-# Initialize Explainability Engines
-explain_engine = None
-if model is not None:
-    # Hook the last squeeze-excitation block of primary model
-    explain_engine = ClinicalExplainEngine(model, model.se_blocks[-1])
 
 # Helper: 9-Class Distribution Fallback
 DISEASES = [
@@ -199,7 +202,12 @@ async def predict_endpoint(
     patient_gender: str = Form("Unknown"),
     doctor_notes: str = Form("")
 ):
-    if model is None:
+    primary_m = get_primary_model()
+    backup_m = get_backup_model()
+    if primary_m is None:
+        # Fallback to backup model if available
+        primary_m = backup_m
+    if primary_m is None:
         raise HTTPException(status_code=500, detail="Server Deep Learning model is not loaded.")
         
     # 1. Load image
@@ -235,11 +243,12 @@ async def predict_endpoint(
         cv2.imwrite(prep_path, prep_img)
         
         # 3. Model Selection
-        active_models = [model]
+        active_models = [primary_m]
         # Map user dropdown selection string to ensembling settings
         is_ensemble = "ensemble" in model_type.lower() or "b0 + b5" in model_type.lower()
-        if is_ensemble and model_backup is not None:
-            active_models.append(model_backup)
+        if is_ensemble and backup_m is not None:
+            active_models.append(backup_m)
+
             
         # 4. Inference
         tensor_device = tensor.to(device)
