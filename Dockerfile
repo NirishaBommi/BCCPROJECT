@@ -7,7 +7,7 @@ ENV PYTHONUNBUFFERED=1
 
 # Install system dependencies for OpenCV and SQLite
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    libgl1-mesa-glx \
+    libgl1 \
     libglib2.0-0 \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
@@ -27,5 +27,5 @@ COPY . .
 # Expose API port
 EXPOSE 5000
 
-# Run FastAPI server
-CMD ["uvicorn", "api.app_fastapi:app", "--host", "0.0.0.0", "--port", "5000"]
+# Run FastAPI server using environment PORT
+CMD ["sh", "-c", "uvicorn app_fastapi:app --host 0.0.0.0 --port ${PORT:-5000}"]
