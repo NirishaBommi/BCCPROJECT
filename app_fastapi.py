@@ -50,13 +50,16 @@ OUTPUT_FOLDER = os.path.join('static', 'outputs')
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 
-# Device Configuration
+# Device Configuration & CPU Memory Optimization
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
+if device == 'cpu':
+    torch.set_num_threads(1)
 
 # Initialize SQLite on Startup
 @app.on_event("startup")
 def startup_event():
     init_db()
+
 
 # Lazy Model Initialization for low memory footprint (<250MB RAM)
 ckpt_path = os.path.join('outputs', 'best_model.pth')

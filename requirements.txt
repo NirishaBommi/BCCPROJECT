@@ -1,11 +1,11 @@
-# =============================================================================
-#  requirements.txt  —  Python dependencies
-# =============================================================================
-torch>=2.1.0
-torchvision>=0.16.0
+# Use CPU-only PyTorch index for lightweight memory footprint (<200MB RAM)
+--extra-index-url https://download.pytorch.org/whl/cpu
+
+torch>=2.1.0+cpu
+torchvision>=0.16.0+cpu
 timm>=0.9.0
 albumentations>=1.3.0
-opencv-python>=4.8.0
+opencv-python-headless>=4.8.0
 scikit-learn>=1.3.0
 pandas>=2.0.0
 numpy>=1.24.0
@@ -18,5 +18,3 @@ uvicorn>=0.22.0
 python-multipart>=0.0.6
 gunicorn>=21.2.0
 psutil>=5.9.0
-
-
