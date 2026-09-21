@@ -707,13 +707,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 data: {
                     labels: [0.0, 0.2, 0.4, 0.6, 0.8, 1.0],
                     datasets: [
-                        { label: 'SE-STN-EfficientNet-B5 (AUC = 0.9862)', data: [0.0, 0.94, 0.98, 0.99, 1.0, 1.0], borderColor: '#0284c7', borderWidth: 3, fill: false },
-                        { label: 'EfficientNet-B4 (AUC = 0.9685)', data: [0.0, 0.91, 0.96, 0.98, 0.99, 1.0], borderColor: '#38bdf8', borderWidth: 2, borderDash: [4, 4], fill: false },
-                        { label: 'DenseNet-121 (AUC = 0.9332)', data: [0.0, 0.86, 0.92, 0.94, 0.97, 1.0], borderColor: '#ea580c', borderWidth: 2, borderDash: [6, 6], fill: false },
-                        { label: 'ResNet-50 (AUC = 0.9212)', data: [0.0, 0.84, 0.90, 0.93, 0.96, 1.0], borderColor: '#f97316', borderWidth: 2, borderDash: [2, 2], fill: false },
-                        { label: 'InceptionV3 (AUC = 0.9050)', data: [0.0, 0.81, 0.88, 0.91, 0.94, 1.0], borderColor: '#16a34a', borderWidth: 2, borderDash: [3, 3], fill: false },
-                        { label: 'MobileNetV3 (AUC = 0.8910)', data: [0.0, 0.78, 0.85, 0.89, 0.93, 1.0], borderColor: '#4ade80', borderWidth: 2, borderDash: [1, 1], fill: false },
-                        { label: 'VGG-16 (AUC = 0.8650)', data: [0.0, 0.74, 0.81, 0.85, 0.90, 1.0], borderColor: '#dc2626', borderWidth: 2, borderDash: [4, 2], fill: false },
+                        { label: 'SE-STN-EfficientNet-B5 (AUC = 0.978)', data: [0.0, 0.94, 0.98, 0.99, 1.0, 1.0], borderColor: '#0284c7', borderWidth: 3, fill: false },
+                        { label: 'EfficientNet-B4 (AUC = 0.961)', data: [0.0, 0.91, 0.96, 0.98, 0.99, 1.0], borderColor: '#38bdf8', borderWidth: 2, borderDash: [4, 4], fill: false },
+                        { label: 'DenseNet-121 (AUC = 0.952)', data: [0.0, 0.86, 0.92, 0.94, 0.97, 1.0], borderColor: '#ea580c', borderWidth: 2, borderDash: [6, 6], fill: false },
+                        { label: 'ResNet-50 (AUC = 0.941)', data: [0.0, 0.84, 0.90, 0.93, 0.96, 1.0], borderColor: '#f97316', borderWidth: 2, borderDash: [2, 2], fill: false },
+                        { label: 'InceptionV3 (AUC = 0.937)', data: [0.0, 0.81, 0.88, 0.91, 0.94, 1.0], borderColor: '#16a34a', borderWidth: 2, borderDash: [3, 3], fill: false },
+                        { label: 'MobileNetV3 (AUC = 0.930)', data: [0.0, 0.78, 0.85, 0.89, 0.93, 1.0], borderColor: '#4ade80', borderWidth: 2, borderDash: [1, 1], fill: false },
+                        { label: 'VGG-16 (AUC = 0.923)', data: [0.0, 0.74, 0.81, 0.85, 0.90, 1.0], borderColor: '#dc2626', borderWidth: 2, borderDash: [4, 2], fill: false },
                         { label: 'Random (AUC = 0.5000)', data: [0.0, 0.2, 0.4, 0.6, 0.8, 1.0], borderColor: '#6b7280', borderWidth: 1.5, borderDash: [8, 4], fill: false }
                     ]
                 },

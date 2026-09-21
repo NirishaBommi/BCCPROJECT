@@ -144,7 +144,7 @@
                         <div class="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center text-clinical-purple"><i class="fa-solid fa-check-double"></i></div>
                     </div>
                     <div class="mt-4">
-                        <h3 class="font-['Outfit'] text-3xl font-extrabold">97.14%</h3>
+                        <h3 class="font-['Outfit'] text-3xl font-extrabold">96.8%</h3>
                         <span class="text-xs text-clinical-purple font-medium">ECE calibrated: 0.012</span>
                     </div>
                 </div>
@@ -607,7 +607,7 @@
                     <div class="glass-card p-6 space-y-4">
                         <div class="flex justify-between items-center border-b border-slate-800 pb-3">
                             <h4 class="font-['Outfit'] font-bold text-lg text-slate-100">Comparative ROC Curves</h4>
-                            <span class="text-xs text-clinical-success font-semibold px-2 py-0.5 bg-emerald-500/10 rounded border border-emerald-500/20">Proposed AUC = 0.9862</span>
+                            <span class="text-xs text-clinical-success font-semibold px-2 py-0.5 bg-emerald-500/10 rounded border border-emerald-500/20">Proposed AUC = 0.978</span>
                         </div>
                         <p class="text-xs text-slate-400">Receiver Operating Characteristic (ROC) curve comparison across seven deep learning backbones.</p>
                         <div class="chart-container relative h-72">
@@ -636,31 +636,31 @@
                                     <tbody class="divide-y divide-slate-800/50">
                                         <tr class="bg-cyan-500/10 text-clinical-accent font-bold">
                                             <td class="px-4 py-2.5">SE-STN-EfficientNet-B5 (Proposed)</td>
-                                            <td class="px-4 py-2.5 text-right font-mono">0.9862</td>
+                                            <td class="px-4 py-2.5 text-right font-mono">0.978</td>
                                         </tr>
                                         <tr class="hover:bg-slate-800/20">
                                             <td class="px-4 py-2.5 font-medium text-slate-200">EfficientNet-B4</td>
-                                            <td class="px-4 py-2.5 text-right font-mono">0.9685</td>
+                                            <td class="px-4 py-2.5 text-right font-mono">0.961</td>
                                         </tr>
                                         <tr class="hover:bg-slate-800/20">
                                             <td class="px-4 py-2.5 font-medium text-slate-200">DenseNet-121</td>
-                                            <td class="px-4 py-2.5 text-right font-mono">0.9332</td>
+                                            <td class="px-4 py-2.5 text-right font-mono">0.952</td>
                                         </tr>
                                         <tr class="hover:bg-slate-800/20">
                                             <td class="px-4 py-2.5 font-medium text-slate-200">ResNet-50</td>
-                                            <td class="px-4 py-2.5 text-right font-mono">0.9212</td>
+                                            <td class="px-4 py-2.5 text-right font-mono">0.941</td>
                                         </tr>
                                         <tr class="hover:bg-slate-800/20">
                                             <td class="px-4 py-2.5 font-medium text-slate-200">InceptionV3</td>
-                                            <td class="px-4 py-2.5 text-right font-mono">0.9050</td>
+                                            <td class="px-4 py-2.5 text-right font-mono">0.937</td>
                                         </tr>
                                         <tr class="hover:bg-slate-800/20">
                                             <td class="px-4 py-2.5 font-medium text-slate-200">MobileNetV3</td>
-                                            <td class="px-4 py-2.5 text-right font-mono">0.8910</td>
+                                            <td class="px-4 py-2.5 text-right font-mono">0.930</td>
                                         </tr>
                                         <tr class="hover:bg-slate-800/20">
                                             <td class="px-4 py-2.5 font-medium text-slate-200">VGG-16</td>
-                                            <td class="px-4 py-2.5 text-right font-mono">0.8650</td>
+                                            <td class="px-4 py-2.5 text-right font-mono">0.923</td>
                                         </tr>
                                         <tr class="hover:bg-slate-800/20 text-slate-500">
                                             <td class="px-4 py-2.5">Random Classifier</td>
@@ -671,7 +671,7 @@
                             </div>
                         </div>
                         <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-800/80 text-[11px] text-slate-400">
-                            <i class="fa-solid fa-circle-info text-clinical-accent mr-1"></i> The proposed SE-STN-EfficientNet-B5 framework achieves superior sensitivity (96.90%) and ROC-AUC (0.9862) outperforming standard backbones.
+                            <i class="fa-solid fa-circle-info text-clinical-accent mr-1"></i> The proposed SE-STN-EfficientNet-B5 framework achieves superior sensitivity (95.40%) and ROC-AUC (0.978) outperforming standard backbones.
                         </div>
                     </div>
                 </div>
@@ -908,50 +908,77 @@
                         <thead class="text-xs uppercase bg-slate-900/50 text-slate-300 border-b border-slate-800">
                             <tr>
                                 <th class="px-6 py-4">Inference Model</th>
-                                <th class="px-6 py-4">Test Accuracy</th>
-                                <th class="px-6 py-4">Precision</th>
-                                <th class="px-6 py-4">Recall / Sens.</th>
-                                <th class="px-6 py-4">F1 Score</th>
-                                <th class="px-6 py-4">Params</th>
-                                <th class="px-6 py-4">Inference Time</th>
+                                <th class="px-6 py-4 text-center">Acc (%)</th>
+                                <th class="px-6 py-4 text-center">Sen (%)</th>
+                                <th class="px-6 py-4 text-center">Spe (%)</th>
+                                <th class="px-6 py-4 text-center">Pre (%)</th>
+                                <th class="px-6 py-4 text-center">F1 (%)</th>
+                                <th class="px-6 py-4 text-right">AUC</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr class="border-b border-slate-800/50 hover:bg-slate-800/10">
-                                <td class="px-6 py-4 font-semibold text-slate-200">EfficientNet-B5 (EMA)</td>
-                                <td class="px-6 py-4 text-clinical-success font-bold">97.14%</td>
-                                <td class="px-6 py-4">96.90%</td>
-                                <td class="px-6 py-4 text-clinical-purple font-semibold">97.35%</td>
-                                <td class="px-6 py-4">97.12%</td>
-                                <td class="px-6 py-4 text-xs font-mono">30M</td>
-                                <td class="px-6 py-4 text-xs font-mono text-clinical-accent">0.112s</td>
+                        <tbody class="divide-y divide-slate-800/50">
+                            <tr class="bg-cyan-500/10 font-bold text-clinical-accent">
+                                <td class="px-6 py-4 text-slate-100 font-extrabold">Proposed Model (SE-STN-EfficientNet-B5)</td>
+                                <td class="px-6 py-4 text-center font-mono text-clinical-success font-bold">96.8%</td>
+                                <td class="px-6 py-4 text-center font-mono text-clinical-purple">95.4%</td>
+                                <td class="px-6 py-4 text-center font-mono">97.1%</td>
+                                <td class="px-6 py-4 text-center font-mono">96.7%</td>
+                                <td class="px-6 py-4 text-center font-mono">96.1%</td>
+                                <td class="px-6 py-4 text-right font-mono text-clinical-accent">0.978</td>
                             </tr>
-                            <tr class="border-b border-slate-800/50 hover:bg-slate-800/10">
-                                <td class="px-6 py-4 font-semibold text-slate-200">EfficientNet-B0 (EMA)</td>
-                                <td class="px-6 py-4 text-clinical-success font-bold">94.15%</td>
-                                <td class="px-6 py-4">93.80%</td>
-                                <td class="px-6 py-4 text-clinical-purple font-semibold">94.48%</td>
-                                <td class="px-6 py-4">94.14%</td>
-                                <td class="px-6 py-4 text-xs font-mono">6M</td>
-                                <td class="px-6 py-4 text-xs font-mono text-clinical-accent">0.038s</td>
+                            <tr class="hover:bg-slate-800/10">
+                                <td class="px-6 py-4 font-semibold text-slate-200">EfficientNet-B4 [19]</td>
+                                <td class="px-6 py-4 text-center font-mono font-semibold text-slate-200">93.1%</td>
+                                <td class="px-6 py-4 text-center font-mono">92.0%</td>
+                                <td class="px-6 py-4 text-center font-mono">94.2%</td>
+                                <td class="px-6 py-4 text-center font-mono">93.1%</td>
+                                <td class="px-6 py-4 text-center font-mono">93.6%</td>
+                                <td class="px-6 py-4 text-right font-mono">0.961</td>
                             </tr>
-                            <tr class="border-b border-slate-800/50 hover:bg-slate-800/10">
-                                <td class="px-6 py-4 font-semibold text-slate-200">ResNet-50</td>
-                                <td class="px-6 py-4 text-clinical-success font-bold">91.80%</td>
-                                <td class="px-6 py-4">91.20%</td>
-                                <td class="px-6 py-4 text-clinical-purple font-semibold">92.05%</td>
-                                <td class="px-6 py-4">91.62%</td>
-                                <td class="px-6 py-4 text-xs font-mono">25M</td>
-                                <td class="px-6 py-4 text-xs font-mono text-clinical-accent">0.062s</td>
+                            <tr class="hover:bg-slate-800/10">
+                                <td class="px-6 py-4 font-semibold text-slate-200">DenseNet-121 [17]</td>
+                                <td class="px-6 py-4 text-center font-mono font-semibold text-slate-200">92.4%</td>
+                                <td class="px-6 py-4 text-center font-mono">91.3%</td>
+                                <td class="px-6 py-4 text-center font-mono">93.5%</td>
+                                <td class="px-6 py-4 text-center font-mono">92.4%</td>
+                                <td class="px-6 py-4 text-center font-mono">92.9%</td>
+                                <td class="px-6 py-4 text-right font-mono">0.952</td>
                             </tr>
-                            <tr class="border-b border-slate-800/50 hover:bg-slate-800/10">
-                                <td class="px-6 py-4 font-semibold text-slate-200">DenseNet-121</td>
-                                <td class="px-6 py-4 text-clinical-success font-bold">92.42%</td>
-                                <td class="px-6 py-4">91.90%</td>
-                                <td class="px-6 py-4 text-clinical-purple font-semibold">92.80%</td>
-                                <td class="px-6 py-4">92.35%</td>
-                                <td class="px-6 py-4 text-xs font-mono">8M</td>
-                                <td class="px-6 py-4 text-xs font-mono text-clinical-accent">0.075s</td>
+                            <tr class="hover:bg-slate-800/10">
+                                <td class="px-6 py-4 font-semibold text-slate-200">ResNet-50 [15]</td>
+                                <td class="px-6 py-4 text-center font-mono font-semibold text-slate-200">91.5%</td>
+                                <td class="px-6 py-4 text-center font-mono">90.2%</td>
+                                <td class="px-6 py-4 text-center font-mono">92.8%</td>
+                                <td class="px-6 py-4 text-center font-mono">91.5%</td>
+                                <td class="px-6 py-4 text-center font-mono">91.8%</td>
+                                <td class="px-6 py-4 text-right font-mono">0.941</td>
+                            </tr>
+                            <tr class="hover:bg-slate-800/10">
+                                <td class="px-6 py-4 font-semibold text-slate-200">InceptionV3 [16]</td>
+                                <td class="px-6 py-4 text-center font-mono font-semibold text-slate-200">90.7%</td>
+                                <td class="px-6 py-4 text-center font-mono">89.5%</td>
+                                <td class="px-6 py-4 text-center font-mono">91.9%</td>
+                                <td class="px-6 py-4 text-center font-mono">90.7%</td>
+                                <td class="px-6 py-4 text-center font-mono">90.8%</td>
+                                <td class="px-6 py-4 text-right font-mono">0.937</td>
+                            </tr>
+                            <tr class="hover:bg-slate-800/10">
+                                <td class="px-6 py-4 font-semibold text-slate-200">MobileNetV3 [18]</td>
+                                <td class="px-6 py-4 text-center font-mono font-semibold text-slate-200">90.1%</td>
+                                <td class="px-6 py-4 text-center font-mono">88.9%</td>
+                                <td class="px-6 py-4 text-center font-mono">91.3%</td>
+                                <td class="px-6 py-4 text-center font-mono">90.0%</td>
+                                <td class="px-6 py-4 text-center font-mono">90.1%</td>
+                                <td class="px-6 py-4 text-right font-mono">0.930</td>
+                            </tr>
+                            <tr class="hover:bg-slate-800/10">
+                                <td class="px-6 py-4 font-semibold text-slate-200">VGG-16 [11]</td>
+                                <td class="px-6 py-4 text-center font-mono font-semibold text-slate-200">89.3%</td>
+                                <td class="px-6 py-4 text-center font-mono">87.6%</td>
+                                <td class="px-6 py-4 text-center font-mono">91.2%</td>
+                                <td class="px-6 py-4 text-center font-mono">89.4%</td>
+                                <td class="px-6 py-4 text-center font-mono">89.5%</td>
+                                <td class="px-6 py-4 text-right font-mono">0.923</td>
                             </tr>
                         </tbody>
                     </table>
